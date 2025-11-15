@@ -1,0 +1,51 @@
+# Node modules
+# Node modules
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+tmp/*.db
+tmp/*.db-shm
+tmp/*.db-wal
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Vite
+web/.vite/
+web/.cache/
+web/.temp/
+
+# Coverage and testing
+coverage/
+*.lcov
+
+# Editor-specific
+.vscode/
+.idea/
+
+# Generated lock files (optional)
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Ignored data files
+data/*.pdf
+data/*.xlsx
+data/*.xls
+data/*.docx

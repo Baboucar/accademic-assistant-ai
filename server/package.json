@@ -1,0 +1,20 @@
+{
+  "name": "utg-server",
+  "type": "module",
+  "scripts": {
+    "dev": "NODE_ENV=development node src/index.js",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.19.2",
+    "helmet": "^7.1.0",
+    "multer": "^2.0.2",
+    "node-fetch": "^3.3.2",
+    "pino": "^9.0.0",
+    "pino-pretty": "^10.3.1",
+    "zod": "^3.23.8"
+  }
+}

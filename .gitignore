@@ -1,0 +1,30 @@
+# Node
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+coverage/
+.vite/
+.cache/
+
+# SQLite databases
+tmp/*.db
+tmp/*.db-*
+tmp/*.db-shm
+tmp/*.db-wal
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
