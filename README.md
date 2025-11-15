@@ -1,9 +1,4 @@
-Here is a **clean, modern, professional, and well-structured README**, rewritten from scratch and improved.
-I also added a **Future Improvements** section.
 
-Feel free to use this version directly in your repo.
-
----
 
 # **UTG Academic Assistant**
 
