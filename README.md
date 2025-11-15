@@ -28,7 +28,7 @@ utg-academic-assistant/
 
 ---
 
-## **⚙ Requirements**
+## **Requirements**
 
 * **Node.js 20+**
 * **Groq API key** (free tier works perfectly)
@@ -36,7 +36,7 @@ utg-academic-assistant/
 
 ---
 
-## ** 1. Installation & Setup**
+## **1. Installation & Setup**
 
 From the project root:
 
@@ -82,7 +82,7 @@ data/notices.docx
 
 ---
 
-## ** 2. Build the SQLite database**
+## **2. Build the SQLite database**
 
 This reads everything under `data/` and generates:
 
@@ -105,7 +105,7 @@ Ingestion complete -> tmp/utg.db
 
 ---
 
-## ** 3. Run the API Server**
+## **3. Run the API Server**
 
 ```bash
 npm --prefix server run dev
@@ -157,7 +157,7 @@ The system automatically interprets natural language and queries the local datab
 
 ---
 
-## ** 5. Notes**
+## **5. Notes**
 
 * The system is **fully file-based**:
   To update a semester, simply replace files in `data/` and run:
@@ -177,11 +177,11 @@ The system automatically interprets natural language and queries the local datab
 
 We are continuously enhancing the system. Here are confirmed upcoming upgrades:
 
-### **1. Better PDF extraction**
+### **1.Better PDF extraction**
 
 Improve messy rows (e.g., lecturers embedded in course_code).
 
-### ** 2. Admin dashboard for uploads**
+### **2.Admin dashboard for uploads**
 
 A web UI in Vue to upload/remove PDF/Excel files without touching folders.
 
@@ -189,14 +189,14 @@ A web UI in Vue to upload/remove PDF/Excel files without touching folders.
 
 Live typing animation during AI responses (optional toggle).
 
-### ** 4. Advanced search tools**
+### **4. Advanced search tools**
 
 * “Show conflicts for lecturer X”
 * “Show free rooms on Thursday”
 * “Give me all courses in the morning”
 * “Compare schedules for two departments”
 
-### ** 5. Semester/version tracking**
+### **5. Semester/version tracking**
 
 Automatically support:
 
@@ -204,7 +204,7 @@ Automatically support:
 * Semester 2
 * Summer school
 
-### ** 6. Better lecturer/course mapping**
+### **6. Better lecturer/course mapping**
 
 AI-assisted correction of PDF parsing errors.
 
