@@ -32,6 +32,31 @@
     }
 }
 
+/* Explicit theme overrides via data-theme on <html> */
+html[data-theme='light'] {
+    --bg: #f3f4f6;
+    --bg-elevated: #ffffff;
+    --border-subtle: #e5e7eb;
+    --text-main: #111827;
+    --text-muted: #6b7280;
+    --accent: #2563eb;
+    --accent-soft: #dbeafe;
+    --accent-strong: #1d4ed8;
+    --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
+}
+
+html[data-theme='dark'] {
+    --bg: #020617;
+    --bg-elevated: #020617;
+    --border-subtle: #1f2937;
+    --text-main: #f9fafb;
+    --text-muted: #9ca3af;
+    --accent: #3b82f6;
+    --accent-soft: #1d283a;
+    --accent-strong: #60a5fa;
+    --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
+}
+
 *,
 *::before,
 *::after {
@@ -47,7 +72,8 @@ body,
 body {
     margin: 0;
     font-family: var(--font-sans);
-    background: radial-gradient(circle at top, #e0f2fe 0, var(--bg) 55%);
+    /* Clean, solid background (no gradient) */
+    background: var(--bg);
     color: var(--text-main);
 }
 
@@ -79,12 +105,8 @@ body {
 .app-header {
     padding: 18px 22px 12px;
     border-bottom: 1px solid var(--border-subtle);
-    background: linear-gradient(
-            to bottom,
-            rgba(191, 219, 254, 0.35),
-            transparent
-    );
-    backdrop-filter: blur(18px);
+    /* Solid header background for a cleaner look */
+    background: var(--bg-elevated);
 }
 
 .app-header-title {
@@ -108,11 +130,8 @@ body {
     flex-direction: column;
     padding: 12px 16px 16px;
     gap: 12px;
-    background: radial-gradient(
-            circle at top,
-            rgba(191, 219, 254, 0.45),
-            transparent 55%
-    );
+    /* Remove decorative gradients */
+    background: transparent;
 }
 
 /* On narrow screens, stretch edge to edge a bit more */
@@ -204,16 +223,15 @@ body {
     padding: 10px 12px;
     border-radius: var(--radius-md);
     border: 1px solid var(--border-subtle);
-    background: rgba(15, 23, 42, 0.92);
-    color: #f9fafb;
+    background: var(--bg-elevated);
+    color: var(--text-main);
     font: inherit;
 }
 
-@media (prefers-color-scheme: light) {
-    .chat-input-row textarea {
-        background: #0f172a;
-        color: #f9fafb;
-    }
+.chat-input-row textarea:focus {
+    outline: none;
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border-subtle));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
 .chat-input-row textarea::placeholder {

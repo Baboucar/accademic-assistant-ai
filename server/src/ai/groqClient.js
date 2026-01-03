@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import { env } from '../env.js';
 export async function chatGroq(messages){
   const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
