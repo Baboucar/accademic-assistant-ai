@@ -143,4 +143,14 @@ const route = useRoute();
 .tabs { display: flex; gap: .5rem; margin-top: .75rem; }
 .tabs a { padding: .4rem .8rem; border: 1px solid var(--border-subtle); background: color-mix(in srgb, var(--bg-elevated) 92%, transparent); color: var(--text-main); text-decoration: none; border-radius: 8px; }
 .tabs a.active { background: var(--bg-elevated); border-color: #999; font-weight: 600; }
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .app-header-title { font-size: 1.25rem; line-height: 1.2; }
+  .app-header-subtitle { font-size: .95rem; }
+  .header-row { flex-direction: column; align-items: flex-start; gap: .6rem; }
+  .header-actions { align-self: stretch; justify-content: space-between; }
+  .theme-toggle, .admin-link { padding: .35rem .7rem; }
+  .tabs { margin-top: .5rem; }
+}
 </style>
