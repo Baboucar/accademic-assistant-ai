@@ -13,7 +13,7 @@ function dayFromISO(dateISO) {
     return d.toLocaleDateString('en-GB', { weekday: 'short' });
 }
 
-async function answerWithModel(question, matches) {
+async function answerWithModel(question, matches, stream = false) {
     const toolText = JSON.stringify(matches, null, 2);
     const system = `
 You are a UTG timetable assistant.
@@ -35,6 +35,7 @@ Rules:
     const body = {
         model: env.MODEL,
         temperature: 0.2,
+        stream: stream, // Add stream parameter
         messages: [
             { role: 'system', content: system },
             {
@@ -54,10 +55,17 @@ Rules:
     });
 
     if (!r.ok) throw new Error(`Groq error ${r.status}: ${await r.text()}`);
+    
+    // If streaming, return the response object for the caller to handle
+    if (stream) {
+        return r;
+    }
+    
     const j = await r.json();
     return j.choices?.[0]?.message?.content?.trim() || 'I could not find it.';
 }
 
+// Original non-streaming endpoint
 chat.post('/chat', async (req, res) => {
     try {
         const question = String(req.body?.question || '');
@@ -93,6 +101,85 @@ chat.post('/chat', async (req, res) => {
         const answer = await answerWithModel(question, matches);
 
         res.json({ answer, toolAnswer: { slots, matches } });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: String(e?.message || e) });
+    }
+});
+
+// NEW: Streaming endpoint
+chat.post('/chat/stream', async (req, res) => {
+    try {
+        const question = String(req.body?.question || '');
+
+        // 1) Extract slots with the LLM (same as above)
+        const slots = await extractSlots(question);
+
+        // 2) Normalise slots for our query layer (same as above)
+        const course = slots.course_code || null;
+        const titleKw = slots.title_kw || null;
+        const dept = slots.dept || null;
+        const day3 = slots.day || dayFromISO(slots.date_iso) || null;
+        const time = slots.time || null;
+        const lecturerKw = slots.lecturer_name || null;
+
+        // 3) Query timetable (same as above)
+        let matches = Queries.flexibleSearch({
+            course,
+            titleKw,
+            lecturerKw,
+            day3,
+            dept,
+            time,
+            venueKw: null,
+        });
+
+        if ((!matches || matches.length === 0) && titleKw) {
+            matches = Queries.fuzzyByTitle(titleKw);
+        }
+
+        // Set up SSE headers
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+
+        // Get streaming response from Groq
+        const streamResponse = await answerWithModel(question, matches, true);
+        
+        // Send toolAnswer metadata first
+        res.write(`data: ${JSON.stringify({ type: 'metadata', toolAnswer: { slots, matches } })}\n\n`);
+
+        // Process the stream
+        const reader = streamResponse.body;
+        
+        reader.on('data', (chunk) => {
+            const lines = chunk.toString().split('\n');
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    try {
+                        const data = JSON.parse(line.slice(6));
+                        const content = data.choices?.[0]?.delta?.content;
+                        if (content) {
+                            res.write(`data: ${JSON.stringify({ type: 'content', content })}\n\n`);
+                        }
+                    } catch (e) {
+                        // Skip invalid JSON lines
+                    }
+                }
+            }
+        });
+
+        reader.on('end', () => {
+            res.write(`data: ${JSON.stringify({ type: 'done' })}\n\n`);
+            res.end();
+        });
+
+        reader.on('error', (err) => {
+            console.error('Stream error:', err);
+            res.write(`data: ${JSON.stringify({ type: 'error', error: err.message })}\n\n`);
+            res.end();
+        });
+
     } catch (e) {
         console.error(e);
         res.status(500).json({ error: String(e?.message || e) });
