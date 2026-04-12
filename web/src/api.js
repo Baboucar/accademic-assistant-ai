@@ -24,42 +24,6 @@ export async function sendQuestion(question) {
 }
 
 /**
-<<<<<<< HEAD
- * NEW: Stream a question to the backend /api/chat/stream endpoint.
- * Returns an async generator that yields chunks of text.
- */
-export async function* streamQuestion(question) {
-    const r = await fetch(`${API_BASE}/api/chat/stream`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question }),
-    });
-
-    if (!r.ok) {
-        const text = await r.text().catch(() => '');
-        throw new Error(`API error ${r.status}: ${text}`);
-    }
-
-    const reader = r.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-
-    while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-            if (line.startsWith('data: ')) {
-                try {
-                    const data = JSON.parse(line.slice(6));
-                    yield data;
-                } catch (e) {
-                    console.warn('Failed to parse SSE data:', line);
-=======
  * Stream a question to the backend. Calls onChunk(text) as tokens arrive.
  * Returns a promise that resolves with the final toolAnswer when stream ends.
  */
@@ -100,15 +64,11 @@ export async function sendQuestionStream(question, onChunk, opts = {}) {
                     }
                 } catch {
                     // ignore
->>>>>>> 50765681afabe35a4a03531140a80111f89ca800
                 }
             }
         }
     }
-<<<<<<< HEAD
-=======
     return finalTool;
->>>>>>> 50765681afabe35a4a03531140a80111f89ca800
 }
 
 /**
@@ -120,9 +80,6 @@ export async function listSources(type = 'timetable') {
         throw new Error(`API error ${r.status}`);
     }
     return r.json(); // { sources: [...] }
-<<<<<<< HEAD
-}
-=======
 }
 
 // ---------------- Admin API (Basic Auth) ----------------
@@ -173,4 +130,3 @@ export async function adminReingest(creds, { file = '', semester = '' } = {}) {
     if (!r.ok) throw new Error(`Admin reingest error ${r.status}`);
     return r.json();
 }
->>>>>>> 50765681afabe35a4a03531140a80111f89ca800
