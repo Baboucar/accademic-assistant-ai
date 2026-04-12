@@ -172,7 +172,6 @@ function scrollToBottom() {
 </template>
 
 <style scoped>
-/* Additional styles that work with the global style.css */
 .chat-panel {
   display: flex;
   flex-direction: column;
@@ -226,7 +225,6 @@ function scrollToBottom() {
   color: var(--text-main);
 }
 
-/* Ensure textarea matches global style */
 .chat-input-row textarea {
   font-family: var(--font-sans);
 }
