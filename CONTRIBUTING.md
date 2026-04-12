@@ -52,7 +52,14 @@ Inside the `/server` folder, create a `.env` file:
 GROQ_API_KEY=your_key_here
 MODEL=llama-3.3-70b-versatile
 ORIGIN=*
+# Admin Basic Auth for /api/admin/* endpoints
+ADMIN_USER=admin
+ADMIN_PASS=change_me
 ```
+
+Notes:
+- Do NOT commit `.env` files to the repository.
+- The admin endpoints return 503 until `ADMIN_USER` and `ADMIN_PASS` are set.
 
 ## 4. Add Timetable Files
 
@@ -87,6 +94,13 @@ cd web
 npm run dev
 ```
 
+Open:
+
+```
+http://localhost:5173/        # Chat UI
+http://localhost:5173/admin   # Admin dashboard (link also in header)
+```
+
 ---
 
 # Testing Your Changes
@@ -109,6 +123,14 @@ curl -X POST http://localhost:5051/api/chat \
 
 Open the local Vite URL (usually [http://localhost:5173](http://localhost:5173)).
 
+Chat controls in the web UI:
+
+- Copy any message (pill button under each bubble)
+- Edit your last question (moves text back to the input and removes the last exchange)
+- Stop streaming (AbortController)
+- Retry last question
+- Keyboard: Enter to send, Shift+Enter for newline
+
 ---
 
 # Coding Guidelines
@@ -119,12 +141,17 @@ Open the local Vite URL (usually [http://localhost:5173](http://localhost:5173))
 * Use async/await consistently
 * Keep functions small and maintainable
 * Avoid unnecessary console logs
+* Use Node's global `fetch` (Undici) for HTTP; do not add `node-fetch`
+* Prefer centralized error handling via Express error middleware
+* Keep streaming code SSE-compatible (ReadableStream with `body.getReader()`)
 
 ### Vue 3
 
 * Use `<script setup>`
 * Keep components focused and reusable
 * Use composable functions for shared logic
+* Use Vue Router for navigation (routes: `/` for Chat, `/admin` for Admin)
+* Support the theme toggle (Light/Dark/System); theme preference persists in `localStorage`
 
 ### SQLite Database
 
@@ -137,6 +164,12 @@ Open the local Vite URL (usually [http://localhost:5173](http://localhost:5173))
 * Parsers should be deterministic
 * Remove noise and formatting inconsistencies
 * Avoid storing raw unprocessed PDF text
+
+### Security & Secrets
+
+* Never commit API keys or `.env` files
+* Validate and sanitize user input at the API layer
+* Keep admin credentials strong; rotate when needed
 
 ---
 
@@ -153,6 +186,16 @@ Before submitting a PR:
     * server API
     * front-end UI
 5. Use descriptive commit messages
+6. Manually verify:
+   - Chat streaming works (send a question, try Stop/Retry)
+   - Copy/Edit buttons behave as expected
+   - Admin route loads and endpoints work when credentials are set
+   - Ingestion still builds `tmp/utg.db`
+
+Branching & commits:
+
+- Branch from `main` using `feature/<short-name>` or `fix/<short-name>`
+- Keep commits small and logically grouped; prefer imperative style, e.g. `feat(web): add copy/edit pill buttons`
 
 ---
 
@@ -213,9 +256,21 @@ Create `docker-compose` for:
 
 ### 8. Front-End Improvements
 
-* Dark mode refinements
+* Dark/Light theme refinements and persistence
 * Better mobile responsiveness
 * Improved layouts and typography
+
+---
+
+# Developer Workflow (Quick Reference)
+
+1. Install deps: `npm --prefix ingest i && npm --prefix server i && (cd web && npm i && cd ..)`
+2. Prepare `.env` in `/server` (see above)
+3. Put files in `data/` and run: `node ingest/ingest.js`
+4. Start API: `npm --prefix server run dev`
+5. Start web: `cd web && npm run dev`
+6. Test: open `http://localhost:5173` (Chat) and `http://localhost:5173/admin` (Admin)
+7. When submitting a PR, include a brief test plan in the description
 
 ---
 

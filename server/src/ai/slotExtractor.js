@@ -1,5 +1,5 @@
 // server/src/ai/slotExtractor.js
-import fetch from 'node-fetch';
+// Use Node's global fetch (Undici) available in Node 18+; no need for node-fetch.
 import { env } from '../env.js';
 
 /**

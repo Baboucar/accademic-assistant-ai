@@ -58,6 +58,9 @@ cat > .env <<EOF
 GROQ_API_KEY=your_groq_key_here
 MODEL=llama-3.3-70b-versatile
 ORIGIN=*
+# Protect admin endpoints (Basic Auth)
+ADMIN_USER=admin
+ADMIN_PASS=strong_password_here
 EOF
 cd ..
 ```
@@ -155,9 +158,41 @@ You can now ask questions like:
 
 The system automatically interprets natural language and queries the local database.
 
+Streaming: The chat UI streams answers token-by-token. If calling the API directly, pass `?stream=1` and consume Server-Sent Events (SSE).
+
+### Chat controls
+- Copy: copy any message via the pill button under each bubble.
+- Edit: edit your most recent question (moves text back to input and removes the last exchange).
+- Stop: cancel streaming mid‑answer.
+- Retry last: resend the previous question quickly.
+- Keyboard: Enter to send, Shift+Enter for newline.
+
 ---
 
-## **5. Notes**
+## **5. Admin Dashboard & Routes**
+
+- Chat UI is at: `http://localhost:5173/`
+- Admin dashboard is now a separate route: `http://localhost:5173/admin`
+
+In the Admin dashboard you can:
+
+- Login using the credentials set in `server/.env` (ADMIN_USER/ADMIN_PASS)
+- Upload timetable/calendar/notice files
+- Reingest a specific file or all files
+- Delete a source (database only) or database + physical file
+
+Admin API endpoints (require Basic Auth):
+
+- GET `/api/admin/sources`
+- POST `/api/admin/upload` (multipart form)
+- DELETE `/api/admin/source/:file?deleteFile=0|1`
+- POST `/api/admin/reingest` with JSON `{ file?: string, semester?: string }`
+
+Note: The admin endpoints return 503 until ADMIN_USER and ADMIN_PASS are configured.
+
+---
+
+## **6. Notes**
 
 * The system is **fully file-based**:
   To update a semester, simply replace files in `data/` and run:
@@ -170,6 +205,10 @@ The system automatically interprets natural language and queries the local datab
   The model is instructed *not to hallucinate* and never invents schedules.
 
 * No sensitive data is sent to third parties; only timetable text is used for interpretation.
+
+### UI Theme
+
+The web UI supports both Light and Dark themes. It respects the system preference by default and includes a toggle in the top-right of the header. Your preference is saved in `localStorage`.
 
 ---
 

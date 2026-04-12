@@ -1,5 +1,39 @@
-# Vue 3 + Vite
+# UTG Academic Assistant — Web UI
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This is the Vue 3 + Vite front‑end for the UTG Academic Assistant. It provides a lightweight chat interface to query the local timetable database exposed by the Node/Express server.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## Run
+
+```
+npm install
+npm run dev
+```
+
+Open http://localhost:5173
+
+## Features
+
+- Dark/Light theme toggle (with system preference fallback and persistence)
+- Router‑based navigation with a dedicated Admin route (`/admin`)
+- Streaming chat UI (Server‑Sent Events)
+- Controls:
+  - Copy any message (per‑message pill button)
+  - Edit your last question (moves text back to the input and removes last exchange)
+  - Stop streaming (AbortController)
+  - Retry last question
+  - Keyboard: Enter to send, Shift+Enter for newline
+
+## Config
+
+The API base defaults to `http://localhost:5051`. You can override via Vite env:
+
+```
+VITE_API_BASE=http://localhost:5051
+```
+
+Create a `.env` file in the project root or start with `VITE_API_BASE` in your shell.
+
+## Notes
+
+- The Admin route is available at `/admin` but is not shown as a primary tab. Use the header link.
+- Theme selection is stored in `localStorage` under `theme` (values: `light`, `dark`, `system`).
