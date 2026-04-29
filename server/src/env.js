@@ -6,6 +6,6 @@ export const env = {
     ORIGIN: process.env.ORIGIN || '*',
     GROQ_API_KEY: process.env.GROQ_API_KEY || '',
     MODEL: process.env.MODEL || 'llama-3.3-70b-versatile',
-    ADMIN_USER: process.env.ADMIN_USER || '',
-    ADMIN_PASS: process.env.ADMIN_PASS || '',
+    ADMIN_USER: process.env.ADMIN_USER || 'Edwin Uche',
+    ADMIN_PASS: process.env.ADMIN_PASS || 'password123',
 };
